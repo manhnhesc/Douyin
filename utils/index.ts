@@ -3,11 +3,7 @@ import { odin_tt, passport_csrf_token } from "../config/config.json";
 import { HDDownloadUrl } from "./config";
 import { stringify } from "qs";
 
-/**
- * 从 URL 中拆出 Sec_id
- * @param userUrl
- * @returns
- */
+
 export const getTiktokSecId = (userUrl: string) => {
   const reg = /(?<=user\/)[^?]+/g;
   const result = userUrl.match(reg);
@@ -15,11 +11,7 @@ export const getTiktokSecId = (userUrl: string) => {
   return null;
 };
 
-/**
- * 随机生成 107 位字符串
- * @param length
- * @returns
- */
+
 export const generateRandomString = (length = 107) => {
   let result = "";
   const characters =
@@ -31,11 +23,7 @@ export const generateRandomString = (length = 107) => {
   return result;
 };
 
-/**
- * 获取 Cookies
- * @param getTtwidFn
- * @returns
- */
+
 export const getCookies = async (getTtwidFn) => {
   const ttwid = await getTtwidFn();
   const cookies = [
@@ -48,12 +36,7 @@ export const getCookies = async (getTtwidFn) => {
   return cookies;
 };
 
-/**
- * 拼接请求参数
- * @param sec_user_id
- * @param max_cursor
- * @returns
- */
+
 export const transformParams = (sec_user_id: string, max_cursor: number) => {
   const params = {
     sec_user_id,
@@ -69,11 +52,7 @@ export const transformParams = (sec_user_id: string, max_cursor: number) => {
   return stringify(params);
 };
 
-/**
- * 获取 1080P 下载地址
- * @param video_id 
- * @returns 
- */
+
 export const transformDownloadUrl = (video_id: string) => {
   return `${HDDownloadUrl}${stringify({ video_id, radio: "1080p", line: 0 })}`
 }
