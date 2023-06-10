@@ -13,7 +13,7 @@ export const downloadVideoQueue = async (
   videoQueue: SpiderQueue[],
   dir: string
 ) => {
-  console.log("开始下载 ===>", dir);
+  console.log("Started downloading ===>", dir);
   const directory = resolve(process.cwd(), downloadDir, filenamify(dir));
   let _downloadCount = 0;
 
