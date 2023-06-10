@@ -29,9 +29,9 @@ export const downloadVideoQueue = async (
     let totalSize = "0";
     try {
       console.log(
-        `Downloading ===> ${++_downloadCount} item ${_downloadCount === 1 ? "" : "\n"}`
+        `\nDownloading ===> ${++_downloadCount} item ${_downloadCount === 1 ? "" : ""}`
       );
-      const fileName = `${item.id}-${filenamify(item.desc)}.mp4`;   
+      const fileName = `${item.id}.mp4`;   
       console.log(`Filename.${_downloadCount}: ${fileName} \n`);   
       let progress = null;
       let downloadHelper = new download({
@@ -70,7 +70,7 @@ export const downloadVideoQueue = async (
           try {
 
             let progressPhoto = null;
-            const fileName = `${item.id}-${filenamify(item.desc)}-${photoCount}.jpeg`;        
+            const fileName = `${item.id}-${photoCount}.jpeg`;        
             console.log(`Photoname.${photoCount}: ${fileName} \n`);    
             let downloadPhotoHelper = new download({
               url: photo,
