@@ -25,7 +25,7 @@ class ProgressBar {
       empty += '░'
     }
 
-    const cmdText = `${this.description}: ${cell}${empty} ${(100 * percent).toFixed(2)}% | Size:${this.totalSize}MB\n`
+    const cmdText = `${this.description}: ${cell}${empty} ${(100 * percent).toFixed(2)} % | Size: ${this.totalSize} MB\n`    
     stdout(cmdText)
   }
 }

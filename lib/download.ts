@@ -7,12 +7,17 @@ import { SpiderQueue } from "../type";
 import { getFileSize, transformDownloadUrl } from "../utils";
 import { headerOption as headers } from "../utils/config";
 import progressBar from "../utils/progressBar";
+import { isNullOrUndefined } from "node:util";
+import util from 'util';
 
 
 export const downloadVideoQueue = async (
   videoQueue: SpiderQueue[],
   dir: string
 ) => {
+
+
+
   console.log("Started downloading ===>", dir);
   const directory = resolve(process.cwd(), downloadDir, filenamify(dir));
   let _downloadCount = 0;
@@ -26,7 +31,8 @@ export const downloadVideoQueue = async (
       console.log(
         `Downloading ===> ${++_downloadCount} item ${_downloadCount === 1 ? "" : "\n"}`
       );
-      const fileName = `${item.id}-${filenamify(item.desc)}.mp4`;
+      const fileName = `${item.id}-${filenamify(item.desc)}.mp4`;   
+      console.log(`Filename.${_downloadCount}: ${fileName} \n`);   
       let progress = null;
       let downloadHelper = new download({
         url: transformDownloadUrl(item.url),
@@ -37,18 +43,77 @@ export const downloadVideoQueue = async (
         skipExistingFileName: true,
         onResponse: (response) => {
           totalSize = getFileSize(response.headers["content-length"]);
-          return true;
+          if (parseFloat(totalSize) > 0) {
+            return true;
+          }
+          else {
+            console.log(`File invalid. Stop downloading.`)
+            return false;
+          }
         },
         onProgress: (percentage) => {
           progress = new progressBar("Download progress", 50, totalSize);
           progress.render({ completed: percentage, total: 100 });
         },
       });
+      progress = null;
 
-      await downloadHelper.download();
+      var downloadResult = await downloadHelper.download();
+      
       downloadHelper = null;
+
+      if (item.photo_urls != undefined && item.photo_urls != null && item.photo_urls.length > 0) {
+        console.log(`Total of photos: ` + item.photo_urls.length);
+        let photoCount = 0;
+        for (let photo of item.photo_urls) {          
+          let totalPhotoSize = "0";
+          try {
+
+            let progressPhoto = null;
+            const fileName = `${item.id}-${filenamify(item.desc)}-${photoCount}.jpeg`;        
+            console.log(`Photoname.${photoCount}: ${fileName} \n`);    
+            let downloadPhotoHelper = new download({
+              url: photo,
+              directory,
+              fileName,
+              headers,
+              maxAttempts: 3,
+              skipExistingFileName: true,
+              onResponse: (response) => {
+                totalPhotoSize = getFileSize(response.headers["content-length"]);
+                if (parseFloat(totalPhotoSize) > 0) {
+                  return true;
+                }
+                else {
+                  console.log(`File invalid. Stop downloading.`)
+                  return false;
+                }
+              },
+              onProgress: (percentage) => {
+                progressPhoto = new progressBar("Download photo progress", 50, totalPhotoSize);
+                progressPhoto.render({ completed: percentage, total: 100 });
+              },
+            });
+
+
+
+            progressPhoto = null;            
+            await downloadPhotoHelper.download();
+            downloadPhotoHelper = null;
+
+
+          } catch (error) {
+            console.log("Download photo failed ===>", fileName);
+            continue;
+          }
+          photoCount += 1;
+        }
+      }
+
+
+
     } catch (error) {
-      console.log("Download failed ===>", item.id);
+      console.log("Download failed ===>", item.id, error);
       continue;
     }
   }

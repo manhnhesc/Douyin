@@ -3,6 +3,8 @@ import { TiktokUserLike } from "../type";
 import { getCookies, getTiktokSecId, transformParams } from "../utils";
 import { headerOption, likeBaseUrl, postBaseUrl } from "../utils/config";
 import { max_retry } from "../config/config.json";
+import { resolve } from "node:path";
+import fs from 'fs';
 
 
 const request = async (url: string, option = {}) => {
@@ -84,7 +86,28 @@ const getUserVideo = (type: string) => {
       console.log("Maximum number of retrying requests exceeded, stop request, download fetched content...");
       return { list: [], max_cursor: 0, has_more: false };
     }
+
+
+
     const response = JSON.parse(responseText) as TiktokUserLike;
+
+
+
+    // const directory1 = resolve(process.cwd(), 'log1.txt');
+    // const directory2 = resolve(process.cwd(), 'log2.txt');
+    // if (response.aweme_list[0].images != null) {
+
+    //   fs.writeFile(directory1, JSON.stringify(response.aweme_list[0].images[0].url_list), function (err) {
+    //     if (err) {
+    //       return console.log(err);
+    //     }
+
+    //     console.log("The file was saved!");
+    //   });
+    // }
+
+
+
 
     return {
       list: response.aweme_list,

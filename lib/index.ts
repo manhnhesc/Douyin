@@ -1,8 +1,8 @@
 import { limit, type, user } from "../config/config.json";
-import { SpiderQueue } from "../type";
+import { SpiderQueue, TiktokUserLikeImage } from "../type";
 import { getUserLikeVideo, getUserPostVideo, getUserSecId } from "./api";
 import { downloadVideoQueue } from "./download";
-
+import linq from 'linq';
 
 const loadQueue = async (user: string, type: string, limit: number) => {
   console.log(`Input type===> ${type === "like" ? "Like" : "Post"}`);
@@ -47,11 +47,18 @@ const loadQueue = async (user: string, type: string, limit: number) => {
       break;
     }
 
-    for (let item of list) {
+    for (let item of list) {      
+      let photos =[];
+      if(item.images != null){
+        const photoRaw = item.images as TiktokUserLikeImage[];
+        photos = linq.from(photoRaw).select(x => x.url_list[x.url_list.length - 1]).toArray();
+        //console.log(photos);
+      }
       const videoInfo = {
         id: item.aweme_id,
         desc: item.desc,
         url: item.video.play_addr.uri,
+        photo_urls: photos
       };
       spiderQueue.push(videoInfo);
     }
