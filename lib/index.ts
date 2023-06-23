@@ -47,9 +47,9 @@ const loadQueue = async (user: string, type: string, limit: number) => {
       break;
     }
 
-    for (let item of list) {      
-      let photos =[];
-      if(item.images != null){
+    for (let item of list) {
+      let photos = [];
+      if (item.images != null) {
         const photoRaw = item.images as TiktokUserLikeImage[];
         photos = linq.from(photoRaw).select(x => x.url_list[x.url_list.length - 1]).toArray();
         //console.log(photos);
@@ -69,6 +69,9 @@ const loadQueue = async (user: string, type: string, limit: number) => {
 };
 
 (async () => {
-  const { spiderQueue } = await loadQueue(user, type, limit);
-  await downloadVideoQueue(spiderQueue, type);
+  var userUrl = user.match(/(http|https)?:\/\/(\S+)/g)[0];
+  if (userUrl != null && userUrl != undefined && userUrl != '') {
+    const { spiderQueue } = await loadQueue(userUrl, type, limit);
+    await downloadVideoQueue(spiderQueue, type);
+  }
 })();
