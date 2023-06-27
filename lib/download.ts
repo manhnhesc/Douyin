@@ -28,50 +28,50 @@ export const downloadVideoQueue = async (
   for (const item of videoQueue) {
     let totalSize = "0";
     try {
-      console.log(
-        `\nDownloading ===> ${++_downloadCount} item ${_downloadCount === 1 ? "" : ""}`
-      );
-      const fileName = `${item.id}.mp4`;   
-      console.log(`Filename.${_downloadCount}: ${fileName} \n`);   
-      let progress = null;
-      let downloadHelper = new download({
-        url: transformDownloadUrl(item.url),
-        directory,
-        fileName,
-        headers,
-        maxAttempts: 3,
-        skipExistingFileName: true,
-        onResponse: (response) => {
-          totalSize = getFileSize(response.headers["content-length"]);
-          if (parseFloat(totalSize) > 0) {
-            return true;
-          }
-          else {
-            console.log(`File invalid. Stop downloading.`)
-            return false;
-          }
-        },
-        onProgress: (percentage) => {
-          progress = new progressBar("Download progress", 50, totalSize);
-          progress.render({ completed: percentage, total: 100 });
-        },
-      });
-      progress = null;
+      const fileName = `${item.id}.mp4`;
+      if (item.url != undefined && item.url != null && item.url != '') {
+        console.log(
+          `\nDownloading ===> ${++_downloadCount} item ${_downloadCount === 1 ? "" : ""}`
+        );
 
-      var downloadResult = await downloadHelper.download();
-      
-      downloadHelper = null;
-
+        console.log(`Filename.${_downloadCount}: ${fileName} \n`);
+        let progress = null;
+        let downloadHelper = new download({
+          url: transformDownloadUrl(item.url),
+          directory,
+          fileName,
+          headers,
+          maxAttempts: 3,
+          skipExistingFileName: true,
+          onResponse: (response) => {
+            totalSize = getFileSize(response.headers["content-length"]);
+            if (parseFloat(totalSize) > 0) {
+              return true;
+            }
+            else {
+              console.log(`File invalid. Stop downloading.`)
+              return false;
+            }
+          },
+          onProgress: (percentage) => {
+            progress = new progressBar("Download progress", 50, totalSize);
+            progress.render({ completed: percentage, total: 100 });
+          },
+        });
+        progress = null;
+        await downloadHelper.download();
+        downloadHelper = null;
+      }
       if (item.photo_urls != undefined && item.photo_urls != null && item.photo_urls.length > 0) {
         console.log(`Total of photos: ` + item.photo_urls.length);
         let photoCount = 0;
-        for (let photo of item.photo_urls) {          
+        for (let photo of item.photo_urls) {
           let totalPhotoSize = "0";
           try {
 
             let progressPhoto = null;
-            const fileName = `${item.id}-${photoCount}.jpeg`;        
-            console.log(`Photoname.${photoCount}: ${fileName} \n`);    
+            const fileName = `${item.id}-${photoCount}.jpeg`;
+            console.log(`Photoname.${photoCount}: ${fileName} \n`);
             let downloadPhotoHelper = new download({
               url: photo,
               directory,
@@ -97,7 +97,7 @@ export const downloadVideoQueue = async (
 
 
 
-            progressPhoto = null;            
+            progressPhoto = null;
             await downloadPhotoHelper.download();
             downloadPhotoHelper = null;
 

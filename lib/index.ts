@@ -5,7 +5,7 @@ import { downloadVideoQueue } from "./download";
 import linq from 'linq';
 
 const loadQueue = async (user: string, type: string, limit: number) => {
-  console.log(`Input type===> ${type === "like" ? "Like" : "Post"}`);
+  console.log(`Input type ===> ${type === "like" ? "Like" : "Post"}`);
 
   const userSecId = await getUserSecId(user);
 
@@ -52,14 +52,17 @@ const loadQueue = async (user: string, type: string, limit: number) => {
       if (item.images != null) {
         const photoRaw = item.images as TiktokUserLikeImage[];
         photos = linq.from(photoRaw).select(x => x.url_list[x.url_list.length - 1]).toArray();
-        //console.log(photos);
+
       }
+      //console.log(item);
+      
       const videoInfo = {
         id: item.aweme_id,
         desc: item.desc,
-        url: item.video.play_addr.uri,
+        url: (item.video != null && item.video != undefined) ? item.video.play_addr.uri : undefined,
         photo_urls: photos
       };
+      
       spiderQueue.push(videoInfo);
     }
   }
@@ -70,6 +73,7 @@ const loadQueue = async (user: string, type: string, limit: number) => {
 
 (async () => {
   var userUrl = user.match(/(http|https)?:\/\/(\S+)/g)[0];
+  console.log(`UserUrl: ` + userUrl);
   if (userUrl != null && userUrl != undefined && userUrl != '') {
     const { spiderQueue } = await loadQueue(userUrl, type, limit);
     await downloadVideoQueue(spiderQueue, type);
