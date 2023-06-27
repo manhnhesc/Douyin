@@ -1,18 +1,18 @@
 {
-  "name": "nodespider_tiktok",
-  "version": "2.1.0",
-  "description": "一个用 Node.js 写的抖音用户发布/喜欢列表爬虫",
+  "name": "douyin_downloader",
+  "version": "2.2.1",
+  "description": "Douyin Downloader (NodeJS)",
   "main": "lib/index.ts",
   "scripts": {
     "start": "tsx lib/index.ts"
   },
   "keywords": [
-    "tiktok",
+    "douyin",
     "抖音",
     "nodejs",
     "javascript"
   ],
-  "author": "YuJian",
+  "author": "manhnhesc",
   "license": "MIT",
   "dependencies": {
     "filenamify": "^5.1.1",
