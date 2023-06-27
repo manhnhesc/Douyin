@@ -31,7 +31,7 @@ export const downloadVideoQueue = async (
       const fileName = `${item.id}.mp4`;
       if (item.url != undefined && item.url != null && item.url != '') {
         console.log(
-          `\nDownloading ===> ${++_downloadCount} item ${_downloadCount === 1 ? "" : ""}`
+          `\nDownloading ===> ${++_downloadCount}/${videoQueue.length} item ${_downloadCount === 1 ? "" : ""}`
         );
 
         console.log(`Filename.${_downloadCount}: ${fileName} \n`);
